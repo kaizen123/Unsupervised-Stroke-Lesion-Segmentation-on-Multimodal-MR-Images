@@ -2,10 +2,6 @@
 import os, shutil, argparse
 from glob import glob
 
-
-# MainFolder = "Z:\\Data\\MRIData\\"
-# FolderList = "D:\\毕设\\testlist.txt"
-# NewFolder = "D:\\毕设\\Structure\\"
 Item = ['nodif.nii.gz', 'nodif_brain.nii.gz']
 
 def InitFile(args):
