@@ -1,0 +1,9 @@
+{
+    "name": "StructureProc",
+    "MainFolder": "F:/liukechun/DataProcessed/Structure/",
+    "FolderList": "F:/liukechun/Pipeline/namelist.txt",
+    "Second": false,
+    "SecondList": "",
+    "JobConfig": "F:/liukechun/Pipeline/Structure/configjob_structure.json",
+    "RunMode": "Parallel"
+}
