@@ -1,2 +1,2 @@
-# GradDesign
-Unsupervised Stroke Lesion Segmentation on Multi-modal MR images
+# Unsupervised Stroke Lesion Segmentation on Multi-modal MR images
+
