@@ -1,4 +1,4 @@
-function [histo,mu,min_range,max_range] = histo_init(data_array, hard, fuzzy)
+function [histo,mu,min_range,max_range] = histo_init(data_array, DATA_MAX, hard, fuzzy)
 %HISTO_INIT initialize the Gaussian parameters, mainly for the averages(mu).
 %
 %
@@ -9,6 +9,9 @@ function [histo,mu,min_range,max_range] = histo_init(data_array, hard, fuzzy)
 %
 % The initialization of mu has changed! The new method is kmeans, while the
 % former method is to find n highest peaks.
+%% Log status
+writelog('histogram and Gaussian Parameters initialing...');
+
 %% Set histogram
 histo = histcounts(data_array, 1:(DATA_MAX+1)); % histogram of input data
 
@@ -37,11 +40,12 @@ max_range = tmp(1)+amp_loc(end)-1;
 
 %% Initialize mu of the histogram
 [~, hard_mu] = kmeans(data_array', hard);
+hard_mu = round(hard_mu);   % integer
 mu = zeros(1,hard+fuzzy);
 hard_mu = sort(hard_mu);
 mu(1:2:(hard+fuzzy)) = hard_mu;
 for i = 1:fuzzy
-    mu(2*i) = (mu(2*i-1)+mu(2*i+1))/2;
+    mu(2*i) = round((mu(2*i-1)+mu(2*i+1))/2);
 end
 
 %% standardize the histogram
