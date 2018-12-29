@@ -1,4 +1,6 @@
 # Unsupervised Stroke Lesion Segmentation on Multi-modal MR images
 
-### LM算法原理推导[转载]
-https://blog.csdn.net/mingtian715/article/details/53579379
+### LM算法原理推导
+
+        Unsupervised-Stroke-Lesion-Segmentation-on-Multimodal-MR-Images/Methods for non-linear least square problems.pdf
+      
