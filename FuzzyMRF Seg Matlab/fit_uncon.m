@@ -9,8 +9,9 @@ function [mu, sigma, weight] = fit_uncon(histo, mu)
 writelog('Gaussian fitting processing...');
 
 %% Initialize weight and sigma
-weight = histo(mu);
-sigma = 100*ones(1,length(mu));
+sigma_value = round(length(histo)/2/length(mu));
+weight = histo(mu) * 2.5066 * sigma_value;
+sigma = sigma_value * ones(1,length(mu));
 
 %% Calculate Jacobian Expression of Gaussian Distribution
 syms wweight mmu ssigma x;
@@ -92,4 +93,3 @@ for i = 1:length(mu)
     jac(:,(i-1)*3+1:i*3) = eval(jac_Exp);
 end
 end
-

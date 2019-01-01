@@ -26,10 +26,6 @@ for i = 2:(length(histo)-1)
     histo(i) = (histo(i-1)+histo(i)+histo(i+1))/3;
 end
 
-%% Remove Skull artifact (value smaller than 100)
-% artifact_threshold = 100;
-% histo(1:artifact_threshold) = 0;
-
 %% Effective range of histogram
 [amp_max, amp_loc] = max(histo);
 amp_threshold = amp_max * 0.01;

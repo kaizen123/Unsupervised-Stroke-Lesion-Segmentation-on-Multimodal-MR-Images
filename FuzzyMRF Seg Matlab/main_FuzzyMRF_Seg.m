@@ -7,8 +7,8 @@ clear;clc;
 filepath = 'C:/Users/Kechun/Desktop/daihuachen_20170518/uiwT1_brain.nii';
 precision = 5;
 CalType = 2;
-hard_classes = 3;
-fuzzy_classes = 2;
+hard_classes = 4;
+fuzzy_classes = 3;
 
 global RunTime;
 RunTime = datestr(now,30);
@@ -59,8 +59,12 @@ data_array = reshape(data_in, 1, []);
 data_array = double(data_array(find(data_array)));
 % Initialize the histogram and Gaussian parameters
 [histo,mu,min_range,max_range] = histo_init(data_array, DATA_MAX, hard_classes, fuzzy_classes); % min&max range seem useless.
-% Proceed the fitting operation
-[mu, sigma, weight] = fit_uncon(histo, mu);
+% By Comparison and observation in the fitting, seems that the fitting
+% doesn't help since the initialization is done by kmeans. That's to say,
+% the result of kmeans is good enough.
+
+% % Proceed the fitting operation
+% [mu, sigma, weight] = fit_uncon(histo, mu);
 
 %% Calculate the Multifractal Labels
 % Multifractal is used to speed up the process. not finished yet. 
@@ -72,15 +76,16 @@ data_array = double(data_array(find(data_array)));
 %% Run Selective Update ICM to determine labels
 % set the effective border. 
 border = cal_border(data_in);
-% Mapping relationship between grey level and label
-
-
+% Mapping relationship between grey level and label(expanded)
+threshold = threshold_fuzzy(mu, precision, DATA_MAX);
 % Initialize labels on 3-D data
-
-% ICM
+data_label = zeros(size(data_in));
+for i = 2:length(threshold)
+    data_label(find(data_in>=threshold(i-1) & data_in<threshold(i))) = i-1;
+end
+% using the entire ICM method
 if(CalType == 2 || CalType == 3)
-    % using the entire ICM method
-    
+    suicm(data_in, data_label, length(threshold)-1, DATA_MAX, hard_classes, fuzzy_classes, precision);
 end
 
 
