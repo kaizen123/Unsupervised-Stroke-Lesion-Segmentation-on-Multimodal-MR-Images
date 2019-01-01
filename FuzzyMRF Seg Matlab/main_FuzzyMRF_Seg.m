@@ -4,15 +4,15 @@ clear;clc;
 % Function: main function of FuzzyMRF Segmentation
 
 %% Parameters
-filepath = 'C:/Users/Kechun/Desktop/daihuachen_20170518/uiwT1_brain.nii';
+filepath = 'C:/Users/Kechun/Desktop/daihuachen_20170518/uirT2_brain.nii';
 precision = 5;
 CalType = 2;
-hard_classes = 4;
-fuzzy_classes = 3;
+hard_classes = 3;
+fuzzy_classes = 2;
 
 global RunTime;
 RunTime = datestr(now,30);
-
+tic;
 %% Check Parameters
 if(precision<1 || precision>20)
     writelog("Error:Invalid input! \nprecision must be bigger than 1 and smaller than 20.");
@@ -81,18 +81,31 @@ threshold = threshold_fuzzy(mu, precision, DATA_MAX);
 % Initialize labels on 3-D data
 data_label = zeros(size(data_in));
 for i = 2:length(threshold)
-    data_label(find(data_in>=threshold(i-1) & data_in<threshold(i))) = i-1;
+    data_label(find(data_in>threshold(i-1) & data_in<=threshold(i))) = i-1;
 end
 % using the entire ICM method
 if(CalType == 2 || CalType == 3)
-    suicm(data_in, data_label, length(threshold)-1, DATA_MAX, hard_classes, fuzzy_classes, precision);
+    data_label = suicm_label(data_in, data_label, length(threshold)-1, DATA_MAX, hard_classes, fuzzy_classes, precision);
 end
 
+%% Output and Save
+save('label.mat','data_label');
 
+% Transform the labeling result to classify resuls
+interval = 256/precision;
+for i = 1:hard_classes
+    index = find(data_label<=i*precision & data_label>(i-2)*precision+1 & data_label>=1);
+    data_out = zeros(size(data_label));
+    data_out(index) = 255 - round(abs(data_label(index)-1-(i-1)*precision)*interval);
+    msg = strcat('Arranging result for class',num2str(i));
+    writelog(msg);
+    y = make_nii(data_out);
+    name = strcat(num2str(i),'.nii');
+    save_nii(y,name);
+end
 
-
-
-
-
+t = toc;
+msg = strcat(strcat('MRF Tissue Classfying finished: ',num2str(toc)),'s');
+writelog(msg);
 
 

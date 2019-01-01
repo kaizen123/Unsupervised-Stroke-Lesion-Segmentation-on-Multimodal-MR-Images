@@ -1,4 +1,4 @@
-function [] = suicm_label(data_in, data_label, n, DATA_MAX, hard, fuzzy, precision)
+function data_label = suicm_label(data_in, data_label, n, DATA_MAX, hard, fuzzy, precision)
 %SUICM_LABEL Selective Updating ICM
 %   'Selective' 
 
@@ -10,8 +10,8 @@ writelog('Selective Updating ICM...');
 mu = zeros(1,n);
 sigma = zeros(1,n);
 for i = 1:n
-    cal_data = data_in(find(data_label==i));
-    if(num(cal_data)<=1)
+    cal_data = double(data_in(find(data_label==i)));
+    if(length(cal_data)<=1)
         if(num(cal_data)<1)
             mu(i) = 0;
         else
@@ -53,17 +53,16 @@ update_flag = ones(size(data_in));
 change_count = size(data_in,1)*size(data_in,2)*size(data_in,3);
 iter_count = 1;
 TOLERANCE = change_count*precision/1000000;
-ITER_MAX = 20;
-BETA_ICM_1 = 0.8;
-BETA_ICM_2 = 0.8;
+ITER_MAX = 10;
+BETA_ICM_1 = 0.5;
+BETA_ICM_2 = 0.3;
 
 %% Iteration begins
 writelog('Luckily the preparation for iteration goes well! Iteration now starts...');
 
-while(change_count>TOLERANCE && ITER_COUNT<=ITER_MAX)
+while(change_count>TOLERANCE && iter_count<=ITER_MAX)
     msg = strcat('SU-ICM Performing iteration: ',num2str(iter_count));
     writelog(msg);
-    change_count = 0;
     % For each voxel, calculate its optimal label with minimal energy
     % U: U1+U2  U2: Energy for neighborhood
     u = cal_energy(n,u_pre,data_label, data_in, BETA_ICM_1, BETA_ICM_2);
@@ -71,8 +70,13 @@ while(change_count>TOLERANCE && ITER_COUNT<=ITER_MAX)
     opt_label = compare_energy(u);
     % Make sure that voxels with 0 grey level don't change
     opt_label(data_in==0) = 0;
+    % Make sure that voxels with enough homogeniety don't change
+    index = find(update_flag==0);
+    opt_label(index) = data_label(index); 
     % Count the changed voxels
     change_count = length(find(opt_label~=data_label));
+    msg = strcat('Changed Voxels: ',num2str(change_count));
+    writelog(msg);
     % Update the selective-update-flags
     % This step follows the C++ project, however, since the calculation is
     % done using matrix operation, it's unnecessary or troublesome to use
@@ -80,6 +84,7 @@ while(change_count>TOLERANCE && ITER_COUNT<=ITER_MAX)
     homo = selective_update(opt_label);
     update_flag(find(homo>4)) = 0; 
     
+    data_label = opt_label;
     iter_count = iter_count + 1;
 end
 
@@ -95,9 +100,9 @@ function u = cal_energy(n, u1_pre, data_label, data_grey, BETA_ICM_1, BETA_ICM_2
 u = zeros(n,x,y,z);
 % Calculate energy on all labels for each voxels
 for i = 1:n
-    u(i,:,:,:) = u1_pre(i,data_grey+1); % make sure that grey level 0 has its u.
-    u(i,:,:,:) = u(i,:,:,:) + cal_energyU2_hv(data_label,i) * BETA_ICM_1;
-    u(i,:,:,:) = u(i,:,:,:) + cal_energyU2_diag(data_label,i) * BETA_ICM_2;
+    u(i,:,:,:) = reshape(u1_pre(i,data_grey+1),x,y,z); % make sure that grey level 0 has its u.
+    u(i,:,:,:) = u(i,:,:,:) + reshape(cal_energyU2_hv(data_label,i),1,x,y,z) * BETA_ICM_1;
+    u(i,:,:,:) = u(i,:,:,:) + reshape(cal_energyU2_diag(data_label,i),1,x,y,z) * BETA_ICM_2;
 end
 
 % Add the multifractal energy U3
