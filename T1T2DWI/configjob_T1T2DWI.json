@@ -1,0 +1,21 @@
+{
+    "name": "BasicProcOnT1T2DWI",
+    "typename": "BatchJob",
+    "config": [
+        {
+            "name": "T1BetNorm",
+            "typename": "BatchJob",
+            "config": "/media/LocalDisk_F/liukechun/Pipeline/T1T2DWI/configjob_T1_basicproc.json"
+        },
+        {
+            "name": "T2BetCoRegister",
+            "typename": "BatchJob",
+            "config": "/media/LocalDisk_F/liukechun/Pipeline/T1T2DWI/configjob_T2_basicproc.json"
+        },
+        {
+            "name": "DWIProc",
+            "typename": "BatchJob",
+            "config": "/media/LocalDisk_F/liukechun/Pipeline/T1T2DWI/configjob_DWI_basicproc.json"
+        }
+    ]
+}
