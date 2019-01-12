@@ -2,7 +2,8 @@
 import os, shutil, argparse
 from glob import glob
 
-Item = ['nodif.nii.gz', 'nodif_brain.nii.gz']
+#Item = ['nodif.nii.gz', 'nodif_brain.nii.gz', 'dtifitresult_MD.nii.gz', 'dtifitresult_FA.nii.gz', 'dtifitresult_L1.nii.gz', 'dtifitresult_L2.nii.gz', 'dtifitresult_L3.nii.gz']
+Item = ['T1.nii', 'iwT1_brain.nii', 'uiwT1_brain.nii', 'wT1_brain.nii','y_T1.nii','iy_T1.nii']
 
 def InitFile(args):
     for subject in open(args.List, "r"):
@@ -17,8 +18,8 @@ def InitFile(args):
                 os.makedirs(Newdir)
                 print("NewFolder: ", Newdir)
             for item in Item:
-                src = dir + "\\" + item
-                dst = Newdir + "\\" + item
+                src = dir + "/" + item
+                dst = Newdir + "/" + item
                 shutil.copyfile(src, dst)
 
 if __name__ == '__main__':
