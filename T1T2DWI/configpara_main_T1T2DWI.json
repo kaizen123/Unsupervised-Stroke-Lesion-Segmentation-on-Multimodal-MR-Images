@@ -1,9 +1,0 @@
-{
-    "name": "T1T2DWI Proc",
-    "MainFolder": "/media/LocalDisk_F/liukechun/DataProcessed/T1T2DWI/",
-    "FolderList": "/media/LocalDisk_F/liukechun/Pipeline/namelist.txt",
-    "Second": false,
-    "SecondList": "",
-    "JobConfig": "/media/LocalDisk_F/liukechun/Pipeline/T1T2DWI/configjob_T1T2DWI.json",
-    "RunMode": "Parallel"
-}
