@@ -21,3 +21,7 @@ Register the features(FA/MD/L1/L2/L3) to MNI Space, using the transformation mat
 Implemented by FSL
 
 *The above processing can only be run in UNIX System, because FSL is only supported in UNIX*
+
+### Structure
+
+Use SPM12 and Matlab to process T1 and T2.
